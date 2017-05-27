@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+
+  frontend:
+    image: stealthybox/vr-swarm
+    volumes:
+    - ./build:/app/build
+    - ./config:/app/config
+    - ./src:/app/src
+    - ./static:/app/static
+    - ./index.html:/app/index.html
+    networks:
+    - ssl_proxy
+    deploy:
+      labels:
+        traefik.port: 8080
+        traefik.docker.network: ssl_proxy
+        traefik.frontend.rule: Host:vr-swarm.localtest.me; PathPrefix:/
+
+  docker-api:
+    image: ehazlett/docker-proxy:latest
+    command: -i
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+    - ssl_proxy
+    deploy:
+      labels:
+        traefik.port: 2375
+        traefik.docker.network: ssl_proxy
+        traefik.frontend.rule: Host:vr-swarm.localtest.me; PathPrefixStrip:/docker
+      placement:
+        constraints:
+        - node.role == manager
+
+networks:
+  ssl_proxy:
+    external: true
