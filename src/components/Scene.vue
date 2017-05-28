@@ -32,6 +32,7 @@
   export default {
     data: () => ({
       services: [],
+      serviceFetcher: null
     }),
     methods: {
       getServices() {
@@ -46,7 +47,13 @@
     },
     created () {
       this.getServices()
+      this.serviceFetcher = setInterval(
+        this.getServices, 1000
+      )
     },
+    destroy () {
+      clearInterval( this.serviceFetcher )
+    }
   }
 </script>
 
