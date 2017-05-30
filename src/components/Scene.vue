@@ -13,14 +13,14 @@
     a-entity(
       v-for='(node, index) in nodes'
       :position='(index+0.5-nodes.length/2)*2 + " .1 -4"'
+      rotation='0 -33 0'
     )
       a-plane(
-        position='0 0 0'
         rotation='-90 0 0'
       )
       a-text(
-        position='-.8 0 0'
         :value='node.Description.Hostname'
+        position='-0.5 0 0'
         rotation='-90 0 0'
         color='black'
         side='double'
@@ -30,13 +30,11 @@
         :position='"0 " + (index*1.5 + 1) + " 0"'
       )
         a-box(
-          rotation='0 45 0'
           color='indigo'
         )
         a-text(
-          position='-.8 0 0'
           :value='services.find( s => s.ID === task.ServiceID ).Spec.Name'
-          rotation='0 -45 0'
+          position='-.7 0 .5'
           color='yellow'
           side='double'
         )
