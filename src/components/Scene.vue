@@ -11,21 +11,31 @@
       height=10
     )
     a-entity(
-      v-for='(service, index) in services'
-      :position='(index+0.5-services.length/2)*2 + " .1 -4"'
+      v-for='(node, index) in nodes'
+      :position='(index+0.5-nodes.length/2)*2 + " .1 -4"'
     )
       a-plane(
         position='0 0 0'
         rotation='-90 0 0'
       )
-      a-entity(position='0 1 0')
+      a-text(
+        position='-.8 0 0'
+        :value='node.Description.Hostname'
+        rotation='-90 0 0'
+        color='black'
+        side='double'
+      )
+      a-entity(
+        v-for='(task, index) in tasks.filter(t => t.DesiredState !== "shutdown" && t.NodeID === node.ID)'
+        :position='"0 " + (index*1.5 + 1) + " 0"'
+      )
         a-box(
           rotation='0 45 0'
           color='indigo'
         )
         a-text(
           position='-.8 0 0'
-          :value='service.Spec.Name'
+          :value='services.find( s => s.ID === task.ServiceID ).Spec.Name'
           rotation='0 -45 0'
           color='yellow'
           side='double'
@@ -55,7 +65,7 @@
         .then( response => response.json() )
         .then( nodes =>
           this.nodes = nodes.sort(
-            (a,b) =>  a.Spec.Name < b.Spec.Name
+            (a,b) =>  a.Description.Hostname < b.Description.Hostname
           )
         )
       },
@@ -79,18 +89,23 @@
       },
     },
     created () {
-      let getAll = () => Promise.All([
-        this.getNodes(),
-        this.getServices(),
-        this.getTasks(),
-      ])
-      getAll()
+      this.getNodes()
+      this.getServices()
+      this.getTasks()
+      this.nodeFetcher = setInterval(
+        this.getNodes, 1000
+      )
       this.serviceFetcher = setInterval(
-        getAll, 1000
+        this.getServices, 1000
+      )
+      this.taskFetcher = setInterval(
+        this.getTasks, 1000
       )
     },
     destroy () {
+      clearInterval( this.nodeFetcher )
       clearInterval( this.serviceFetcher )
+      clearInterval( this.taskFetcher )
     }
   }
 </script>
