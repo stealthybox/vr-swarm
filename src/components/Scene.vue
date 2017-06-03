@@ -1,42 +1,69 @@
 <template lang='pug'>
   a-scene
     a-sky(
-      color='midnightblue'
-    )
-    a-plane(
-      position='0 0 -4'
-      rotation='-90 0 0'
-      color='grey'
-      width=10
-      height=10
+    color='#5C4CFF'
     )
     a-entity(
-      v-for='(node, index) in nodes'
-      :position='(index+0.5-nodes.length/2)*2 + " .1 -4"'
-      rotation='0 -33 0'
+    v-for='(cloudpos, index) in cloudpositions'
+    :key='index'
+    :position='cloudpos'
+    :rotation='`0 ${index*360/cloudpositions.length} 0`'
+    )
+      a-sphere(
+      :radius='(index/cloudpositions.length)+0.1'
+      )
+      a-sphere(
+      position='0 0 -1'
+      )
+      a-sphere(
+      position='-1 0 0'
+      )
+      a-sphere(
+      position='-.5 .5 0'
+      )
+    a-plane(
+    position='0 0 -4'
+    rotation='-90 0 0'
+    color='#3F9922'
+    width=200
+    height=200
+    )
+    a-circle(
+    position='0 .01 -4'
+    rotation='-90 0 0'
+    color='grey'
+    :radius='nodes.length*2 + 2'
+    )
+    a-entity(
+    v-for='(node, index) in nodes'
+    :key='node.ID'
+    :position='(index+0.5-nodes.length/2)*2 + " .1 -4"'
+    rotation='0 -33 0'
     )
       a-plane(
-        rotation='-90 0 0'
+      rotation='-90 0 0'
+      color='#333'
       )
       a-text(
-        :value='node.Description.Hostname'
-        position='-0.5 0 0'
-        rotation='-90 0 0'
-        color='black'
-        side='double'
+      :value='node.Description.Hostname'
+      position='-0.5 0 0'
+      rotation='-90 0 0'
+      color='#FF3F6A'
+      side='double'
       )
       a-entity(
-        v-for='(task, index) in tasks.filter(t => t.DesiredState !== "shutdown" && t.NodeID === node.ID)'
-        :position='"0 " + (index*1.5 + 1) + " 0"'
+      v-for='(task, index) in tasks.filter(t => t.DesiredState !== "shutdown" && t.NodeID === node.ID)'
+      :key='task.ID'
+      :position='"0 " + (index*1.5 + 1) + " 0"'
       )
         a-box(
-          color='indigo'
+        color='#3A9BE8'
         )
         a-text(
-          :value='services.find( s => s.ID === task.ServiceID ).Spec.Name'
-          position='-.7 0 .5'
-          color='yellow'
-          side='double'
+        :value='services.find( s => s.ID === task.ServiceID ).Spec.Name'
+        position='-.7 0 .5'
+        color='#eee'
+        side='double'
         )
 </template>
 
@@ -45,6 +72,9 @@
 
   export default {
     data: () => ({
+      cloudpositions: [...Array(200)].map( cloud =>
+        `${Math.random()*200-100} ${Math.random()*40+20} ${Math.random()*200-100}`
+      ),
       nodes: [],
       services: [],
       tasks: [],
