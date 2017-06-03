@@ -111,8 +111,8 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   a-scene {
-    height: 800px;
-    width: 1024px;
+    height: 56px;
+    width: 80px;
   }
   h1, h2 {
     font-weight: normal;
