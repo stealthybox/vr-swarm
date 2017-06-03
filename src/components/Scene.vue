@@ -3,6 +3,25 @@
     a-sky(
     color='#5C4CFF'
     )
+    a-sphere(
+    position='40 30 -40'
+    radius='10'
+    color='yellow'
+    )
+    a-plane(
+    position='-10 -10 -30'
+    rotation='0 0 -40'
+    color='#440044'
+    width=60
+    height=60
+    )
+    a-plane(
+    position='10 -10 -40'
+    rotation='0 0 -40'
+    color='#440044'
+    width=60
+    height=60
+    )
     a-entity(
     v-for='(cloudpos, index) in cloudpositions'
     :key='index'
@@ -10,7 +29,7 @@
     :rotation='`0 ${index*360/cloudpositions.length} 0`'
     )
       a-sphere(
-      :radius='(index/cloudpositions.length)+0.1'
+      :radius='(index/cloudpositions.length)*1.5+0.1'
       )
       a-sphere(
       position='0 0 -1'
@@ -37,24 +56,25 @@
     a-entity(
     v-for='(node, index) in nodes'
     :key='node.ID'
-    :position='(index+0.5-nodes.length/2)*2 + " .1 -4"'
+    :position='(index+0.5-nodes.length/2)*2 + " .5a -4"'
     rotation='0 -33 0'
     )
-      a-plane(
-      rotation='-90 0 0'
+      a-box(
+      rotation='-30 0 0'
       color='#333'
+      width=1.2
+      height=1.2
       )
-      a-text(
-      :value='node.Description.Hostname'
-      position='-0.5 0 0'
-      rotation='-90 0 0'
-      color='#FF3F6A'
-      side='double'
-      )
+        a-text(
+        :value='node.Description.Hostname'
+        position='-0.5 0 0.5'
+        color='#FF3F6A'
+        side='double'
+        )
       a-entity(
       v-for='(task, index) in tasks.filter(t => t.DesiredState !== "shutdown" && t.NodeID === node.ID)'
       :key='task.ID'
-      :position='"0 " + (index*1.5 + 1) + " 0"'
+      :position='`0 ${index*1.5 + 1.6} 0`'
       )
         a-box(
         color='#3A9BE8'
@@ -72,8 +92,8 @@
 
   export default {
     data: () => ({
-      cloudpositions: [...Array(200)].map( cloud =>
-        `${Math.random()*200-100} ${Math.random()*40+20} ${Math.random()*200-100}`
+      cloudpositions: [...Array(50)].map( cloud =>
+        `${Math.random()*50-25} ${Math.random()*40+20} ${Math.random()*50-25}`
       ),
       nodes: [],
       services: [],
