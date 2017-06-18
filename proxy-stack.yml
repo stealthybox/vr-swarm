@@ -1,0 +1,25 @@
+# example stack of a cluster-wide load balancer
+version: '3.1'
+
+services:
+  # traefik uses service labels to dynamically configure routes
+  traefik:
+    image: traefik
+    command:
+    - --web
+    - --docker
+    - --docker.swarmmode
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints:
+        - node.role == manager
+    ports:
+    - 80:80
+    - 8080:8080
+    networks:
+    - proxy
+
+networks:
+  proxy:
