@@ -70,12 +70,12 @@
     rotation='0 0 0'
     position='-5 5.5 -10'
     color='#333'
-    width=5
-    height=10
+    width=6
+    height=12
     )
       a-text(
       :value='log'
-      position='-2 4.5 0.5'
+      position='-2.4 4.4 0.5'
       side='double'
       )
 </template>
